@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Letter</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Playfair Display', serif; margin: 0; padding: 10px; color: #333; overflow-x: hidden; background-color: #000; }
+  .container { max-width: 480px; width: 100%; margin: auto; text-align: center; }
+  .heart-container, .container { display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100vh; position: relative; }
+  .heart { width: 100px; height: 100px; fill: #b68ea7; cursor: pointer; transition: transform 0.3s, fill 0.3s; }
+  .message-container { margin-top: 20px; position: absolute; top: 120px; }
+  .message-container p { font-size: 1.2em; color: #6d597a; margin: 0; }
+  .section { margin: 20px; padding: 20px; border-radius: 10px; opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s; text-align: center; }
+  .section.reveal { opacity: 1; transform: translateY(0); }
+  .love-letter { background-color: #b7c6ca; color: #200327; }
+  .gallery { background-color: #99959e; color: #200327; }
+  .qa { background-color: #ebd29d; color: #200327; }
+  .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; justify-content: center; align-items: center; vertical-align: middle; margin: 0 auto; max-width: 100%; width: 100%; }
+  .gallery-item { position: relative; width: auto; height: 250px; overflow: hidden; border-radius: 10px; cursor: pointer; transition: transform 0.3s; align-items: center; vertical-align: middle; }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+  .gallery-item:hover img { transform: scale(1.1); }
+  .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); color: #fff; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+  .gallery-item:hover .overlay { opacity: 1; }
+  .question-btn { font-family: 'Playfair Display', serif; background-color: #457b9d; color: #fff; border: none; padding: 10px 15px; margin: 10px 0; cursor: pointer; border-radius: 5px; transition: background-color 0.3s; }
+  .question-btn:hover { background-color: #1d3557; }
+  .question-btn:active { background-color: #1d3557; transform: scale(0.95); }
+  .answer { display: none; padding: 10px; background-color: #e0e0e0; border-radius: 5px; margin-top: 10px; }
+  .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); justify-content: center; align-items: center; vertical-align: middle; z-index: 1000; }
+  .lightbox img { width: 90%; height: auto; border-radius: 10px; }
+  .lightbox-nav { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; transform: translateY(-50%); }
+  .loading-spinner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 4px solid rgba(0, 0, 0, 0.1); border-left: 4px solid #333; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  @keyframes sunriseGradient { 0% { background: linear-gradient(135deg, #d6a4a4, #f1e6f0) } 100% { background: linear-gradient(135deg, #d6a4a4, #f1e6f0) } }
+  @keyframes sunsetGradient { 0% { background: linear-gradient(135deg, #a4cad6, #f1e6f0) } 100% { background: linear-gradient(135deg, #e4c0b7, #feb47b) } }
+  .background-sunrise { animation: sunriseGradient 1s forwards; }
+  .background-sunset { animation: sunsetGradient 1s forwards; }
+  @keyframes reveal { 0% { opacity: 0; transform: translateY(10px) } 100% { opacity: 1; transform: translateY(0) } }
+  @media (min-width: 768px) { .container { max-width: 480px; } }
+  .notification { position: absolute; margin: 10px; bottom: 10px; left: 50%; transform: translateX(-50%); background-color: #f3ecb1; color: #000; padding: 10px 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); font-size: 1em; text-align: center; z-index: 100; }
+</style>
+</head>
+<body class="background-sunrise">
+<div class="heart-container">
+  <svg class="heart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onclick="tapHeart()" aria-label="Tap heart to reveal message">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+  </svg>
+  <div class="message-container">
+    <p id="message">Tap to reveal my message!</p>
+  </div>
+  <div class="notification">Best viewed on mobile. If not responsive, find the settings button and open with Chrome or a compatible browser.</div>
+</div>
+<div class="container" style="display:none">
+  <section class="section love-letter">
+    <h1>My Dearest Ezekiel,</h1>
+    <p>Hi Kiel! First of all, congratulations sayo. Ang galing galing mo, Magna Cum Laude! Pero wala namang duda rin kasi ang galing mo sa klase. Mani nalang yan sayo, emz.</p>
+    <p>Anyways, hindi ko talaga alam kung pano to sisimulan HAHAHAHA. Well, feel ko need ko lang din sabihin para balik sayo yung burden, emz HAHAHAHAHHAA. So ayun nga, ito na rin yung alam kong paraan para umamin sayo. Kiel, sorry. Naging crush kita. Feel ko naman alam mo yon, kasi sabi mo magaling kang bumasa ng tao. Kung di mo alam, edi bobo ka, emz HAHAHAHAHA.</p>
+    <p>Honestly, akala ko may gusto ka rin sakin dati eh. Diba? Kapal ng mukha. Kasi ikaw rin e, pauso ka. Sobra mong clingy eh, di pa tayo ganun ka close nung una. Tangina mo, natulog ka pa sa balikat ko nung klase sa 150, eh sobrang kakaiba nun saken. Pero hindi ko rin naman inentertain yung thought na yun, lalo na nung nalaman kong may nililigawan ka.</p>
+    <p>Okay naman sakin na ako yung nakakausap mo about sa panliligaw non, kasi wala naman saken yon non. Support kaya ako kasi kaibigan ko rin naman si Gian. Pero, tangina mo. Well, ako pala ang wrong non, kasi grabe ka magreact nung kay Justin e di ko naman yon hinaharot. Akala ko talaga may gusto ka sakin. Eh siguro alam mo naman na mabilis ako madarang pakitaan lang ng anes, may meaning na HAHAHAHAHAHA. Actually, sinubukan ko nga ring makipagharutan sa iba para lang hindi ako mag-isip nang sobra sa mga kilos mo, to the point na, tangina, narealize ko na tama nga yung chika mo na may something nga rito kay Justin tapos namisinterpet ko pa yung pinagalitan mo ko HAHAHAHHA, sorry huhu pinagsisihan ko na. </p>
+    <p><i>To be hOnest</i> (tangina favorite mong line tuwing lasing HAHAGAGAAHAGA), lumala lang naman lahat nung inuman natin kasama org mo. Taena, ginamit mo pa ako pan-selos, as if naman magseselos sa bakla si Gian. HAHAHAHAHAHHA. Masakit siya actually, pero keri lang naman malayo sa bituka. Tapos, ayun nga yung Laguna de Bay date (for me, sorry). Alam mo dun ko talaga nakita pagiging boyfriend material mo, kasi pasok na pasok sa standards ko. Kaso ayun na may nililigawan ka na at ayoko namang magmukhang tinatrabaho ka, well, alam mo na yun. Eh yun pa naman ang pinaka-hate na hate ko, diba?</p>
+    <p>So ayun, pinalaya ko ang sarili ko, to the point na minute kita sa socials ko saka hindi ba nagpaparamdam sayo. Kasi hindi siya pala madali na basta makalimot. Kaya, gusto ko rin mag-sorry kung biglang naging ganon yung treatment ko sayo. Hindi ko alam kung naramdaman mo, o baka ako lang na nagmamaganda. Thankfully, naging busy ako nitong midyear kasi nakatulong siya sa pagkalimot. Tingnan mo nagcode pa ako para lang dito. Pero ayoko naman din syempreng i-shove sayo. Masaya ako sa ginagawa ko naman at no pressure sayo na ma-feel ba, u know what im sayin'. </p>
+    <p>Sa dulo ng liham na ito, wish ko sayo ay good health, career, and wealth as Don Ezekiel ng AGA Wing. Sana magflourish yung relationship niyo ni Gian (I'm rooting for u both!). Andito lang me pag may kailangan ka this time, sorry talaga sa pagtatago sayo. Nagpapasalamat ako sa oras na binigay mo sakin, samin. Sobrang namimiss ko na ang triple death match natin ni Hannah. Goodluck sa iyong mga future errands. Congratulations ulit Kiel, proud na proud ako sayo. I love you 🤗. </p>
+    <p>Sincerely,<br><b>Arda Mae</b></p>
+    
+    <p>Ps. Tangina akala mo high school ampota. Anyways, baka lang curious ka, si Nicette, Hannah, Ken, Whitney, Harley, Leara, Kerstin, Ma'am Marian lang nakakaalam, sa pagkakatanda ko.</p>
+  </section>
+  <section class="section gallery">
+    <h2>My Favorite Pictures With U</h2>
+    <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox(0)">
+        <img src="https://drive.google.com/thumbnail?id=1TjCj-x8D3-9k8Pg_FD1ZFdyyNv_fK1YV" alt="Image 1">
+        <div class="overlay">Lunch at Mang Inasal</div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(1)">
+        <img src="https://drive.google.com/thumbnail?id=1Tz4SiklBnssVmVxoDd8FaEsbK9qRp2Gt" alt="Image 2">
+        <div class="overlay">Triple Death Match with Hannah</div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(2)">
+        <img src="https://drive.google.com/thumbnail?id=1TpV2Qp4-W77hmVi6TmfRWHelAYEvYMAR" alt="Image 3">
+        <div class="overlay">Laguna de Bay Date</div>
+      </div>
+    </div>
+  </section>
+  <section class="section qa">
+    <h2>Question & Answer Portion</h2>
+    <button class="question-btn" onclick="toggleAnswer('qa1')">Q: What is my favorite memory with you?</button>
+    <div id="qa1" class="answer">A: Ang triple death match natin ni Hannah at syempre ang Laguna de Bay date natin.</div>
+    <button class="question-btn" onclick="toggleAnswer('qa2')">Q: What do I love most about you?</button>
+    <div id="qa2" class="answer">A: Nagustuhan ko talaga na matalino ka saka madiskarte, saka iba ka magkagusto HAHAHA so cute parang aso. So blovely.</div>
+    <button class="question-btn" onclick="toggleAnswer('qa3')">Q: How do I see our future together?</button>
+    <div id="qa3" class="answer">A: I see us na magiging kumpare HAHAHAHHAHAHAHAHA brad at magyayabangan ng anak kung mabubuntis at manganganak man ako HAHAHAHA.</div>
+  </section><br>
+</div>
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+  <div class="loading-spinner"></div>
+  <img src="" id="lightbox-img" alt="Lightbox Image">
+</div>
+
+<script>
+  let tapCount = 0;
+  const images = [
+    'https://drive.google.com/thumbnail?id=1TjCj-x8D3-9k8Pg_FD1ZFdyyNv_fK1YV',
+    'https://drive.google.com/thumbnail?id=1Tz4SiklBnssVmVxoDd8FaEsbK9qRp2Gt',
+    'https://drive.google.com/thumbnail?id=1TpV2Qp4-W77hmVi6TmfRWHelAYEvYMAR'
+  ];
+  let currentIndex = 0;
+
+  function tapHeart() {
+    tapCount++;
+    const heart = document.querySelector('.heart');
+    heart.style.transform = `scale(${1 + tapCount * 0.2})`;
+    heart.style.fill = `rgba(112,0,128,${0.1 + tapCount * 0.1})`;
+    const message = document.getElementById('message');
+
+    if (tapCount >= 6 && tapCount <= 8) {
+      message.innerText = "Tap more!";
+    } else if (tapCount === 9) {
+      message.innerText = "Almost there!";
+    } else if (tapCount === 10) {
+      document.body.classList.replace('background-sunrise', 'background-sunset');
+      document.querySelector('.heart-container').style.display = 'none';
+      document.querySelector('.container').style.display = 'block';
+      document.querySelector('.container').style.animation = 'reveal .5s ease-out';
+    } else {
+      message.innerText = "Tap to reveal my message!";
+    }
+  }
+
+  function openLightbox(index) {
+    currentIndex = index;
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const spinner = document.querySelector('.loading-spinner');
+
+    lightbox.style.display = 'flex';
+    lightboxImg.src = images[currentIndex];
+    spinner.style.display = 'block';
+
+    lightboxImg.onload = () => spinner.style.display = 'none';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+  }
+
+  function changeImage(direction) {
+    currentIndex = (currentIndex + direction + images.length) % images.length;
+    const lightboxImg = document.getElementById('lightbox-img');
+    const spinner = document.querySelector('.loading-spinner');
+
+    lightboxImg.src = images[currentIndex];
+    spinner.style.display = 'block';
+
+    lightboxImg.onload = () => spinner.style.display = 'none';
+  }
+
+  function toggleAnswer(id) {
+    const answer = document.getElementById(id);
+    answer.style.display = answer.style.display === 'none' ? 'block' : 'none';
+    const btn = event.target;
+    btn.classList.add('pressed');
+    setTimeout(() => btn.classList.remove('pressed'), 200);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.section').forEach(section =>
+      new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal');
+            observer.unobserve(entry.target);
+          }
+        });
+      }).observe(section)
+    );
+  });
+</script>
+</body>
+</html>
